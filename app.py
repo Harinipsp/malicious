@@ -19,24 +19,9 @@ def extract_features(url):
     except:
         hostname, path, tld = '', '', ''
 
-    # Binary features
     def is_ip(hostname):
         return 1 if re.match(r"\d+\.\d+\.\d+\.\d+", hostname) else 0
 
-    def is_short_url(url):
-        shortening_services = re.compile(
-            'bit\.ly|goo\.gl|shorte\.st|go2l\.ink|x\.co|ow\.ly|t\.co|tinyurl|tr\.im|is\.gd|cli\.gs|'
-            'yfrog\.com|migre\.me|ff\.im|tiny\.cc|url4\.eu|twit\.ac|su\.pr|twurl\.nl|snipurl\.com|'
-            'short\.to|BudURL\.com|ping\.fm|post\.ly|Just\.as|bkite\.com|snipr\.com|fic\.kr|loopt\.us|'
-            'doiop\.com|short\.ie|kl\.am|wp\.me|rubyurl\.com|om\.ly|to\.ly|bit\.do|t\.co|lnkd\.in|'
-            'db\.tt|qr\.ae|adf\.ly|goo\.gl|bitly\.com|cur\.lv|tinyurl\.com|ow\.ly|bit\.ly|ity\.im|'
-            'q\.gs|is\.gd|po\.st|bc\.vc|twitthis\.com|u\.to|j\.mp|buzurl\.com|cutt\.us|u\.bb|yourls\.org|'
-            'x\.co|prettylinkpro\.com|scrnch\.me|filoops\.info|vzturl\.com|qr\.net|1url\.com|tweez\.me|v\.gd|'
-            'tr\.im|link\.zip\.net'
-        )
-        return 1 if shortening_services.search(url) else 0
-
-    # Return feature vector (18 features)
     return [
         len(hostname),                                # hostname_length
         len(path),                                    # path_length
@@ -54,8 +39,7 @@ def extract_features(url):
         sum(c.isdigit() for c in url),                # count-digits
         sum(c.isalpha() for c in url),                # count-letters
         path.count('/'),                              # count_dir
-        is_ip(hostname),                              # use_of_ip
-        is_short_url(url)                             # short_url
+        is_ip(hostname)                               # use_of_ip
     ]
 
 # ========== Streamlit UI ==========
