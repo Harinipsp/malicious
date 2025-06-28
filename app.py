@@ -7,10 +7,8 @@ import tldextract
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load the trained Random Forest model
 model = joblib.load("malicious_url_rfc_model.pkl")
 
-# ========== Feature Extraction Function ==========
 def extract_features(url):
     try:
         parsed = urlparse(str(url))
@@ -24,33 +22,32 @@ def extract_features(url):
         return 1 if re.match(r"\d+\.\d+\.\d+\.\d+", hostname) else 0
 
     return [
-        len(hostname),                                # hostname_length
-        len(path),                                    # path_length
-        len(path.split('/')[1]) if len(path.split('/')) > 1 else 0,  # fd_length
-        len(tld),                                     # tld_length
-        url.count('-'),                               # count-
-        url.count('@'),                               # count@
-        url.count('?'),                               # count?
-        url.count('%'),                               # count%
-        url.count('.'),                               # count.
-        url.count('='),                               # count=
-        url.count('http'),                            # count-http
-        url.count('https'),                           # count-https
-        url.count('www'),                             # count-www
-        sum(c.isdigit() for c in url),                # count-digits
-        sum(c.isalpha() for c in url),                # count-letters
-        path.count('/'),                              # count_dir
-        is_ip(hostname)                               # use_of_ip
+        len(hostname),                               
+        len(path),                                   
+        len(path.split('/')[1]) if len(path.split('/')) > 1 else 0,  
+        len(tld),                                    
+        url.count('-'),                              
+        url.count('@'),                               
+        url.count('?'),                               
+        url.count('%'),                              
+        url.count('.'),                              
+        url.count('='),                               
+        url.count('http'),                            
+        url.count('https'),                          
+        url.count('www'),                             
+        sum(c.isdigit() for c in url),                
+        sum(c.isalpha() for c in url),                
+        path.count('/'),                              
+        is_ip(hostname)                               
     ]
-
-# ========== Streamlit UI ==========
+    
 st.set_page_config(page_title="Malicious URL Detector", layout="centered")
 st.title("🔍 Malicious URL Detection")
 st.markdown("Check if a URL is **Malicious** or **Benign** using a trained ML model.")
 
 tab1, tab2 = st.tabs(["🔗 Single URL Prediction", "📁 Batch Prediction"])
 
-# ======= Tab 1: Single URL =======
+
 with tab1:
     url_input = st.text_input("Enter a URL:")
     if st.button("Predict"):
@@ -65,7 +62,6 @@ with tab1:
         else:
             st.warning("Please enter a valid URL.")
 
-# ======= Tab 2: Batch Prediction =======
 with tab2:
     st.markdown("Upload a CSV file with a column named **`url`** for batch prediction.")
     file = st.file_uploader("📤 Upload CSV", type=["csv"])
@@ -76,7 +72,7 @@ with tab2:
             if 'url' not in df.columns:
                 st.error("❌ CSV must contain a 'url' column.")
             else:
-                # Feature extraction for all URLs
+               
                 df['features'] = df['url'].apply(lambda x: extract_features(x))
                 features_list = list(df['features'].values)
                 predictions = model.predict(features_list)
@@ -87,7 +83,7 @@ with tab2:
                 st.subheader("📊 Prediction Results")
                 st.dataframe(df[['url', 'Prediction_Label']])
 
-                # Visualization
+                
                 st.subheader("📈 Visual Summary")
                 count_data = df['Prediction_Label'].value_counts()
 
