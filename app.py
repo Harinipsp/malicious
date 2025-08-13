@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-model = joblib.load("malicious_url_rfc_model.pkl")
+model = joblib.load("random_forest_model.pkl")
 
 def extract_features(url):
     try:
