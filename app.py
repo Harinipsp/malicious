@@ -56,7 +56,7 @@ st.set_page_config(page_title="Malicious URL Detector", layout="centered")
 st.title("🔍 Malicious URL Detection")
 st.markdown("Check if a URL is **Malicious** or **Benign** using a trained ML model.")
 
-tab1, tab2 = st.tabs(["🔗 Single URL Prediction", "📁 Batch Prediction"])
+tab1, tab2 = st.tabs(["Single URL Prediction", "Batch Prediction"])
 
 with tab1:
     url_input = st.text_input("Enter a URL:")
@@ -67,9 +67,9 @@ with tab1:
             prediction_proba = model.predict_proba([features])[0][prediction]
 
             if prediction == 1:
-                st.error(f"⚠️ This URL is **Malicious**. Confidence: {prediction_proba*100:.2f}%")
+                st.error(f"This URL is **Malicious**. Confidence: {prediction_proba*100:.2f}%")
             else:
-                st.success(f"✅ This URL is **Benign**. Confidence: {prediction_proba*100:.2f}%")
+                st.success(f"This URL is **Benign**. Confidence: {prediction_proba*100:.2f}%")
 
             # Show top features affecting prediction
             importances = model.feature_importances_
@@ -79,7 +79,7 @@ with tab1:
                 'Importance': importances
             }).sort_values(by="Importance", ascending=False)
 
-            st.subheader("📌 Feature Importance for this Prediction")
+            st.subheader("Feature Importance for this Prediction")
             st.dataframe(feature_importance_df)
 
         else:
@@ -87,13 +87,13 @@ with tab1:
 
 with tab2:
     st.markdown("Upload a CSV file with a column named **`url`** for batch prediction.")
-    file = st.file_uploader("📤 Upload CSV", type=["csv"])
+    file = st.file_uploader("Upload CSV", type=["csv"])
 
     if file is not None:
         try:
             df = pd.read_csv(file)
             if 'url' not in df.columns:
-                st.error("❌ CSV must contain a 'url' column.")
+                st.error("CSV must contain a 'url' column.")
             else:
                 df['features'] = df['url'].apply(lambda x: extract_features(x))
                 features_list = list(df['features'].values)
@@ -104,10 +104,10 @@ with tab2:
                 df['Confidence'] = [probas[i][predictions[i]] for i in range(len(predictions))]
                 df['Prediction_Label'] = df['Prediction'].apply(lambda x: "Malicious" if x == 1 else "Benign")
 
-                st.subheader("📊 Prediction Results")
+                st.subheader("Prediction Results")
                 st.dataframe(df[['url', 'Prediction_Label', 'Confidence']])
 
-                st.subheader("📈 Visual Summary")
+                st.subheader("Visual Summary")
                 count_data = df['Prediction_Label'].value_counts()
 
                 col1, col2 = st.columns(2)
