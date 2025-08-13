@@ -40,7 +40,7 @@ def extract_features(url):
         sum(c.isdigit() for c in url),               
         sum(c.isalpha() for c in url),               
         path.count('/'),                             
-        is_ip(hostname)
+        is_ip(hostname),
         is_short_url(hostname)
     ]
 
